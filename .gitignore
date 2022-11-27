@@ -33,4 +33,14 @@ cmake-*
 *.app
 
 # PlatformIO
-.pio
+.pio*.diff
+*.patch
+*.orig
+*.rej
+
+# Temporary files
+*~
+.#*
+*#
+.*.swp
+*.tmp
