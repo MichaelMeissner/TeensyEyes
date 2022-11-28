@@ -179,6 +179,7 @@ struct EyeDefinition {
   ScleraParams sclera{};
   EyelidParams eyelids{};
   PolarParams polar{};
+  const char *name{};       // name of the eye.
 };
 
 /// One-per-eye structure. Mutable, holding the current state of an eye/display.

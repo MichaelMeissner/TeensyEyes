@@ -7151,6 +7151,7 @@ namespace fish {
       { 115, { eyeIris, eyeIrisWidth, eyeIrisHeight }, 0, 0, 0, 0, 0 },
       { { eyeSclera, eyeScleraWidth, eyeScleraHeight }, 0, 0, 0, 0, 0 },
       { noUpper_120, noLower_120, 0 },
-      { 240, polarAngle_240, polarDist_240_120_115_0 }
+      { 240, polarAngle_240, polarDist_240_120_115_0 },
+      { "fish" }
   };
 }

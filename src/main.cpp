@@ -113,11 +113,26 @@ void setup() {
   const DisplayDefinition<GC9A01A_Display> left{l, defs[0]};
   const DisplayDefinition<GC9A01A_Display> right{r, defs[1]};
   eyes = new EyeController<2, GC9A01A_Display>({left, right}, !hasJoystick(), !hasBlinkButton(), !hasLightSensor());
+
+ if (defs[0].name && defs[1].name) {
+   if (defs[0].name == defs[1].name)
+     Serial.printf ("Eye (%d): %s\n", defIndex, defs[0].name);
+   else
+     Serial.printf ("Eye (%d): %s, %s\n", defIndex, defs[0].name, defs[1].name);
+ }
 }
 
 void nextEye() {
   defIndex = (defIndex + 1) % eyeDefinitions.size();
   eyes->updateDefinitions(eyeDefinitions.at(defIndex));
+
+ auto &defs = eyeDefinitions.at(defIndex);
+ if (defs[0].name && defs[1].name) {
+   if (defs[0].name == defs[1].name)
+     Serial.printf ("Eye (%d): %s\n", defIndex, defs[0].name);
+   else
+     Serial.printf ("Eye (%d): %s, %s\n", defIndex, defs[0].name, defs[1].name);
+ }
 }
 
 /// MAIN LOOP -- runs continuously after setup() ----------------------------
