@@ -10,13 +10,34 @@
 #include "displays/GC9A01A_Display.h"
 #include "LightSensor.h"
 
-constexpr uint32_t EYE_DURATION_MS{4'000};
+// Allow config.h to override the defaults for eye duration time, blink pin,
+// joystick pins, and light sensor pins.
+#ifndef CONFIG_EYE_DURATION_MS
+#define CONFIG_EYE_DURATION_MS	4'000
+#endif
 
 // Set to -1 to disable the blink button and/or joystick
-constexpr int8_t BLINK_PIN{-1};
-constexpr int8_t JOYSTICK_X_PIN{-1};
-constexpr int8_t JOYSTICK_Y_PIN{-1};
-constexpr int8_t LIGHT_PIN{-1};
+#ifndef CONFIG_BLINK_PIN
+#define CONFIG_BLINK_PIN	-1
+#endif
+
+#ifndef CONFIG_JOYSTICK_X_PIN
+#define CONFIG_JOYSTICK_X_PIN	-1
+#endif
+
+#ifndef CONFIG_JOYSTICK_Y_PIN
+#define CONFIG_JOYSTICK_Y_PIN	-1
+#endif
+
+#ifndef CONFIG_LIGHT_PIN
+#define CONFIG_LIGHT_PIN	-1
+#endif
+
+constexpr uint32_t EYE_DURATION_MS{CONFIG_EYE_DURATION_MS};
+constexpr int8_t BLINK_PIN{CONFIG_BLINK_PIN};
+constexpr int8_t JOYSTICK_X_PIN{CONFIG_JOYSTICK_X_PIN};
+constexpr int8_t JOYSTICK_Y_PIN{CONFIG_JOYSTICK_Y_PIN};
+constexpr int8_t LIGHT_PIN{CONFIG_LIGHT_PIN};
 
 // TFT: use max SPI (clips to 12 MHz on M0)
 constexpr uint32_t SPI_FREQUENCY{48'000'000};
