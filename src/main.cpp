@@ -123,7 +123,22 @@ void setup() {
 }
 
 void nextEye() {
-  defIndex = (defIndex + 1) % eyeDefinitions.size();
+  // For the first pass go through the eyes in linear order.  After the first
+  // pass choose the next eye at random.
+  static bool in_order = true;
+  uint32_t size = eyeDefinitions.size();
+  if (in_order && defIndex < size-1) {
+    defIndex++;
+
+  } else {
+    in_order = false;
+    size_t loop_count = 0;
+    uint32_t oldIndex = defIndex;
+    do {
+      defIndex = random (0, size - 1);
+    } while (defIndex == oldIndex && ++loop_count < 4);
+  }
+
   eyes->updateDefinitions(eyeDefinitions.at(defIndex));
 
  auto &defs = eyeDefinitions.at(defIndex);
