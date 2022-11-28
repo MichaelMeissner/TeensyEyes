@@ -22,9 +22,10 @@ constexpr int8_t LIGHT_PIN{-1};
 constexpr uint32_t SPI_FREQUENCY{48'000'000};
 const SPISettings settings(SPI_FREQUENCY, MSBFIRST, SPI_MODE0);
 
+// Start Meissner change, add more eyes
 // A list of all the different eye definitions we want to use
-std::array<std::array<EyeDefinition, 2>, 13> eyeDefinitions{{
-//                                                                {anime::eye, anime::eye},
+std::array<std::array<EyeDefinition, 2>, 18> eyeDefinitions{{
+                                                                {anime::eye, anime::eye},
                                                                 {bigBlue::eye, bigBlue::eye},
                                                                 {brown::eye, brown::eye},
                                                                 {cat::eye, cat::eye},
@@ -33,17 +34,18 @@ std::array<std::array<EyeDefinition, 2>, 13> eyeDefinitions{{
                                                                 {doomRed::eye, doomRed::eye},
                                                                 {doomSpiral::left, doomSpiral::right},
                                                                 {dragon::eye, dragon::eye},
-//                                                                {fish::eye, fish::eye},
+                                                                {fish::eye, fish::eye},
                                                                 {fizzgig::eye, fizzgig::eye},
-//                                                                {hazel::eye, hazel::eye},
+                                                                {hazel::eye, hazel::eye},
                                                                 {hypnoRed::eye, hypnoRed::eye},
-//                                                                {newt::eye, newt::eye},
+                                                                {newt::eye, newt::eye},
                                                                 {skull::eye, skull::eye},
                                                                 {snake::eye, snake::eye},
-//                                                                {spikes::eye, spikes::eye}
+                                                                {spikes::eye, spikes::eye},
                                                                 {toonstripe::eye, toonstripe::eye},
                                                             }
 };
+// End Meissner change, add more eyes
 
 // The index of the currently selected eye definitions
 static uint32_t defIndex{0};

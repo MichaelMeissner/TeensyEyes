@@ -3,7 +3,9 @@
 #include "eyes/eyes.h"
 
 // Enable the eye(s) you want to #include -- these are large graphics tables for various eyes:
-//#include "eyes/240x240/anime.h"
+// Note, you have to also adjust eyeDefinitions in main.cpp when you add more eyes.
+// Meissner change, add more eyes.
+#include "eyes/240x240/anime.h"
 #include "eyes/240x240/bigBlue.h"
 #include "eyes/240x240/brown.h"
 #include "eyes/240x240/cat.h"
@@ -12,15 +14,16 @@
 #include "eyes/240x240/doomRed.h"
 #include "eyes/240x240/doomSpiral.h"
 #include "eyes/240x240/dragon.h"
-//#include "eyes/240x240/fish.h"
+#include "eyes/240x240/fish.h"
 #include "eyes/240x240/fizzgig.h"
-//#include "eyes/240x240/hazel.h"
+#include "eyes/240x240/hazel.h"
 #include "eyes/240x240/hypnoRed.h"
-//#include "eyes/240x240/newt.h"
+#include "eyes/240x240/newt.h"
 #include "eyes/240x240/skull.h"
 #include "eyes/240x240/snake.h"
-//#include "eyes/240x240/spikes.h"
+#include "eyes/240x240/spikes.h"
 #include "eyes/240x240/toonstripe.h"
+// end Meissner change
 
 #include "displays/GC9A01A_Display.h"
 
