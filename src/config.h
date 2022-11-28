@@ -33,7 +33,13 @@
 // eyelid handling -- no need for distinct L-to-R or R-to-L inner loops. Just the X
 // coordinate of the iris is then reversed when drawing this eye, so they move the same.
 GC9A01A_Config eyeInfo[] = {
-    // CS DC MOSI SCK RST ROT MIRROR USE_FB ASYNC
-    {0,  2, 26, 27, 3, 0, true,  true, true}, // Left display
-    {10, 9, 11, 13, 8, 0, false, true, true}, // Right display
+//    // CS DC MOSI SCK RST ROT MIRROR USE_FB ASYNC
+//    {0,  2, 26, 27, 3, 0, true,  true, true}, // Left display
+//    {10, 9, 11, 13, 8, 0, false, true, true}, // Right display
+
+  // Meissner changes
+  // CS  DC  MOSI  SCK  RST  ROT  MIRROR USE_FB  ASYNC
+  {   0, 24,   26,  27,  25,   0,      0,     1,  true },	// Right eye
+  {  22,  9,   11,  13,  10,   0,      0,     1,  true }	// Left eye
+
 };
