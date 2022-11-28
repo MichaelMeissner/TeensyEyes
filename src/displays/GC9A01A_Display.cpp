@@ -41,7 +41,12 @@ GC9A01A_Display::GC9A01A_Display(const GC9A01A_Config &config) : display(createD
 }
 
 GC9A01A_Display::~GC9A01A_Display() {
-  delete display;
+  // Do not delete the display element.  It gets the following warning:
+  // In file included from /home/meissner/Arduino/meissner/TeensyEyes/build-GC9A01A.cpp:6:
+  // GC9A01A_Display.cpp: In destructor 'virtual GC9A01A_Display::~GC9A01A_Display()':
+  // GC9A01A_Display.cpp:45:3: warning: deleting object of polymorphic class type 'GC9A01A_t3n' which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
+
+  // delete display;
 }
 
 void GC9A01A_Display::drawPixel(int16_t x, int16_t y, uint16_t color565) {
