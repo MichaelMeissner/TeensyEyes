@@ -154,7 +154,7 @@ void nextEye() {
 void loop() {
   // Switch eyes periodically
   static elapsedMillis eyeTime{};
-  if (eyeTime > EYE_DURATION_MS) {
+  if (eyeTime > EYE_DURATION_MS && eyeDefinitions.size() > 1) {
     nextEye();
     eyeTime = 0;
   }
