@@ -48,8 +48,8 @@ GC9A01A_Config eyeInfo[] = {
 };
 
 // Override defaults
-//#define CONFIG_EYE_DURATION_MS	4'000	// Eye change duration
-//#define CONFIG_BLINK_PIN		-1	// Pin to do an explicit blink
+#define CONFIG_EYE_DURATION_MS		16'000	// Eye change duration
+#define CONFIG_BLINK_PIN		3	// Pin to do an explicit blink
 //#define CONFIG_JOYSTICK_X_PIN		-1	// Analog input pin for joystick X axis
 //#define CONFIG_JOYSTICK_Y_PIN		-1	// Analog input pin for joystick Y axis
 //#define CONFIG_LIGHT_PIN		-1	// Light sensor pin
