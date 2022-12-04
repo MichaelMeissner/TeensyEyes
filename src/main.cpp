@@ -29,6 +29,20 @@ bool hasJoystick() {
   return JOYSTICK_X_PIN >= 0 && JOYSTICK_Y_PIN >= 0;
 }
 
+static void printEyeName (const char *lname, const char *rname)
+{
+  if (!lname || lname[0] == '\0')
+    lname = "no left name";
+
+  if (!rname || rname[0] == '\0')
+    rname = "no right name";
+
+  if (strcmp (lname, rname) == 0)
+    Serial.printf ("Eye #%-2d %s\n", (int)defIndex, lname);
+  else
+    Serial.printf ("Eye #%-2d %s, %s\n", (int)defIndex, lname, rname);
+}
+
 /// INITIALIZATION -- runs once at startup ----------------------------------
 void setup() {
   Serial.begin(115200);
@@ -55,11 +69,30 @@ void setup() {
   const DisplayDefinition<GC9A01A_Display> left{l, defs[0]};
   const DisplayDefinition<GC9A01A_Display> right{r, defs[1]};
   eyes = new EyeController<2, GC9A01A_Display>({left, right}, !hasJoystick(), !hasBlinkButton(), !hasLightSensor());
+  printEyeName (defs[0].name, defs[1].name);
 }
 
 void nextEye() {
-  defIndex = (defIndex + 1) % eyeDefinitions.size();
+  // For the first pass go through the eyes in linear order.  After the first
+  // pass choose the next eye at random.
+  static bool in_order = true;
+  uint32_t size = eyeDefinitions.size();
+  if (in_order && defIndex < size-1) {
+    defIndex++;
+
+  } else {
+    in_order = false;
+    size_t loop_count = 0;
+    uint32_t oldIndex = defIndex;
+    do {
+      defIndex = random (0, size - 1);
+    } while (defIndex == oldIndex && ++loop_count < 4);
+  }
+
   eyes->updateDefinitions(eyeDefinitions.at(defIndex));
+
+ auto &defs = eyeDefinitions.at(defIndex);
+ printEyeName (defs[0].name, defs[1].name);
 }
 
 /// MAIN LOOP -- runs continuously after setup() ----------------------------
