@@ -65,7 +65,8 @@ GC9A01A_Config eyeInfo[] = {
   {  22,  9,   11,  13,  10,   0,      0,     1, true }		// Left eye
 };
 
-constexpr uint32_t EYE_DURATION_MS{4'000};
+// Meissner: Slow down eye duration
+constexpr uint32_t EYE_DURATION_MS{16'000};
 
 /// The speed of the SPI bus. For maximum performance, set this as high as you can get away with.
 /// It will depend on the displays themselves, wire lengths, shielding/interference etc. My
