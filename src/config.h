@@ -3,49 +3,65 @@
 #include "eyes/eyes.h"
 
 // Enable the eye(s) you want to #include -- these are large graphics tables for various eyes:
-//#include "eyes/240x240/anime.h"
-#include "eyes/240x240/bigBlue.h"
-#include "eyes/240x240/brown.h"
 #include "eyes/240x240/cat.h"
 #include "eyes/240x240/demon.h"
+#include "eyes/240x240/dragon.h"
+#include "eyes/240x240/hazel.h"
+#include "eyes/240x240/hypnoRed.h"
+#include "eyes/240x240/skull.h"
+#include "eyes/240x240/snake.h"
+#include "eyes/240x240/toonstripe.h"
+
+// Note, Teensy 4.0 does not have enough space for all of the eyes, so only
+// build a subset of the eyes on Teensy 4.0.  Build all 18 of the eyes on the
+// Teensy 4.1.
+#if defined(ARDUINO_TEENSY41)
+#define ALL_EYES
+#endif
+
+#if defined(ALL_EYES)
+#include "eyes/240x240/anime.h"
+#include "eyes/240x240/bigBlue.h"
+#include "eyes/240x240/brown.h"
 #include "eyes/240x240/doe.h"
 #include "eyes/240x240/doomRed.h"
 #include "eyes/240x240/doomSpiral.h"
-#include "eyes/240x240/dragon.h"
-//#include "eyes/240x240/fish.h"
+#include "eyes/240x240/fish.h"
 #include "eyes/240x240/fizzgig.h"
-//#include "eyes/240x240/hazel.h"
-#include "eyes/240x240/hypnoRed.h"
-//#include "eyes/240x240/newt.h"
-#include "eyes/240x240/skull.h"
-#include "eyes/240x240/snake.h"
-//#include "eyes/240x240/spikes.h"
-#include "eyes/240x240/toonstripe.h"
+#include "eyes/240x240/newt.h"
+#include "eyes/240x240/spikes.h"
+
+#define NUM_EYE_PATTERNS 18
+#else
+#define NUM_EYE_PATTERNS 8
+#endif
 
 #include "displays/GC9A01A_Display.h"
 
 // A list of all the different eye definitions we want to use
-std::array<std::array<EyeDefinition, 2>, 13> eyeDefinitions{{
-//                                                               {anime::eye, anime::eye},
-                                                               {bigBlue::eye, bigBlue::eye},
-                                                               {brown::eye, brown::eye},
-                                                               {cat::eye, cat::eye},
-                                                               {demon::left, demon::right},
-                                                               {doe::left, doe::right},
-                                                               {doomRed::eye, doomRed::eye},
-                                                               {doomSpiral::left, doomSpiral::right},
-                                                               {dragon::eye, dragon::eye},
-//                                                               {fish::eye, fish::eye},
-                                                               {fizzgig::eye, fizzgig::eye},
-//                                                               {hazel::eye, hazel::eye},
-                                                               {hypnoRed::eye, hypnoRed::eye},
-//                                                               {newt::eye, newt::eye},
-                                                               {skull::eye, skull::eye},
-                                                               {snake::eye, snake::eye},
-//                                                                {spikes::eye, spikes::eye}
-                                                               {toonstripe::eye, toonstripe::eye},
-                                                           }
-};
+std::array<std::array<EyeDefinition, 2>, NUM_EYE_PATTERNS> eyeDefinitions{{
+  { cat::eye,           cat::eye          },
+  { demon::left,        demon::right      },
+  { dragon::eye,        dragon::eye       },
+  { hazel::eye,         hazel::eye        },
+  { hypnoRed::eye,      hypnoRed::eye     },
+  { skull::eye,         skull::eye        },
+  { snake::eye,         snake::eye        },
+  { toonstripe::eye,    toonstripe::eye   },
+
+#if defined(ALL_EYES)
+  { anime::eye,         anime::eye        },
+  { bigBlue::eye,       bigBlue::eye      },
+  { brown::eye,         brown::eye        },
+  { doe::left,          doe::right        },
+  { doomRed::eye,       doomRed::eye      },
+  { doomSpiral::left,   doomSpiral::right },
+  { fish::eye,          fish::eye         },
+  { fizzgig::eye,       fizzgig::eye      },
+  { newt::eye,          newt::eye         },
+  { spikes::eye,        spikes::eye       },
+#endif
+}};
 
 // DISPLAY HARDWARE SETTINGS (screen type & connections) -------------------
 
