@@ -3500,7 +3500,6 @@ namespace dragon {
       { 90, { eyeIris, eyeIrisWidth, eyeIrisHeight }, 0, 0, 0, 0, 0 },
       { { nullptr, 0, 0 }, 0, 0, 0, 0, 0 },
       { eyeUpper, eyeLower, 0 },
-      { 240, polarAngle_240, polarDist_240_125_90_90 },
-      { "dragon" }
+      { 240, polarAngle_240, polarDist_240_125_90_90 }
   };
 }

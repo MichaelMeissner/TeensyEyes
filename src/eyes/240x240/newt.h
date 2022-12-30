@@ -5208,7 +5208,6 @@ namespace newt {
       { 60, { eyeIris, eyeIrisWidth, eyeIrisHeight }, 0, 0, 0, 0, 0 },
       { { eyeSclera, eyeScleraWidth, eyeScleraHeight }, 0, 0, 0, 0, 0 },
       { eyeUpper, eyeLower, 0 },
-      { 240, polarAngle_240, polarDist_240_125_60_0 },
-      { "newt" }
+      { 240, polarAngle_240, polarDist_240_125_60_0 }
   };
 }

@@ -35,14 +35,13 @@ cmake-*
 # PlatformIO
 .pio
 
-# Meissner changes.
-# patch files
+# Meissner changes for patch files.
 *.patch
 *.diff
 *.orig
 *.rej
 
-# Temporary files
+# Meissner changes for emacs temporary files
 *~
 .#*
 *#

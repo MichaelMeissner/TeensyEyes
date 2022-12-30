@@ -80,7 +80,6 @@ namespace cat {
       { 90, { nullptr, 0, 0 }, 65504, 0, 0, 0, 0 },
       { { nullptr, 0, 0 }, 65504, 0, 0, 0, 0 },
       { eyeUpper, eyeLower, 0 },
-      { 240, polarAngle_240, polarDist_240_125_90_90 },
-      { "cat" }
+      { 240, polarAngle_240, polarDist_240_125_90_90 }
   };
 }

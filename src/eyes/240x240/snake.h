@@ -5548,7 +5548,6 @@ namespace snake {
       { 90, { eyeIris, eyeIrisWidth, eyeIrisHeight }, 0, 0, 0, 0, 0 },
       { { nullptr, 0, 0 }, 65322, 0, 0, 0, 0 },
       { eyeUpper, eyeLower, 0 },
-      { 240, polarAngle_240, polarDist_240_125_90_90 },
-      { "snake" }
+      { 240, polarAngle_240, polarDist_240_125_90_90 }
   };
 }
