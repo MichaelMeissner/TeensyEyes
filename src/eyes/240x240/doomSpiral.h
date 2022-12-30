@@ -5543,7 +5543,7 @@ namespace doomSpiral {
   };
 
   const EyeDefinition left PROGMEM = {
-      125, 63488, true, 0.5, disp_240_125, 
+      "doomSpiral", 125, 63488, true, 0.5, disp_240_125,
       { 65525, 0, 0.0, 0.0 },
       { 125, { leftIris, leftIrisWidth, leftIrisHeight }, 0, 0, 80, 0, 0 },
       { { nullptr, 0, 0 }, 63488, 0, 0, 0, 0 },
@@ -5552,7 +5552,7 @@ namespace doomSpiral {
       { "doomSprial-left" }
   };
   const EyeDefinition right PROGMEM = {
-      125, 63488, true, 0.5, disp_240_125, 
+      "doomSpiral", 125, 63488, true, 0.5, disp_240_125,
       { 65525, 0, 0.0, 0.0 },
       { 125, { leftIris, leftIrisWidth, leftIrisHeight }, 0, 0, 70, 0, 1023 },
       { { nullptr, 0, 0 }, 63488, 0, 0, 0, 0 },
