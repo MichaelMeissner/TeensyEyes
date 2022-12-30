@@ -10,8 +10,8 @@ GC9A01A_t3n *createDisplay(const GC9A01A_Config &config) {
   return new GC9A01A_t3n(config.cs, config.dc, config.rst, config.mosi, config.sck);
 }
 
-GC9A01A_Display::GC9A01A_Display(const GC9A01A_Config &config) : display(createDisplay(config)),
-                                                                 asyncUpdates(config.asyncUpdates) {
+GC9A01A_Display::GC9A01A_Display(const GC9A01A_Config &config, uint32_t spiSpeed) :
+    display(createDisplay(config)), asyncUpdates(config.asyncUpdates) {
   static size_t displayNum{};
   Serial.print(F("Init GC9A01A display #"));
   Serial.print(displayNum);
@@ -19,7 +19,8 @@ GC9A01A_Display::GC9A01A_Display(const GC9A01A_Config &config) : display(createD
   Serial.print(config.rotation);
   Serial.print(F(", mirror="));
   Serial.println(config.mirror);
-  display->begin();
+  display->updateChangedAreasOnly(true);
+  display->begin(spiSpeed);
   display->setRotation(config.rotation);
   if (config.mirror) {
     const std::array<uint8_t, 4> mirrorTFT{0x8, 0x20, 0x40, 0xE0}; // Mirror + rotate
@@ -41,12 +42,10 @@ GC9A01A_Display::GC9A01A_Display(const GC9A01A_Config &config) : display(createD
 }
 
 GC9A01A_Display::~GC9A01A_Display() {
-  // Do not delete the display element.  It gets the following warning:
-  // In file included from /home/meissner/Arduino/meissner/TeensyEyes/build-GC9A01A.cpp:6:
-  // GC9A01A_Display.cpp: In destructor 'virtual GC9A01A_Display::~GC9A01A_Display()':
-  // GC9A01A_Display.cpp:45:3: warning: deleting object of polymorphic class type 'GC9A01A_t3n' which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
-
+  // TODO: this looks like a bug in GC9A01A_t3n, it is meant to have a virtual destructor.
+  //  about the best we can do is just free the frame buffer :-/
   // delete display;
+  display->freeFrameBuffer();
 }
 
 void GC9A01A_Display::drawPixel(int16_t x, int16_t y, uint16_t color565) {
