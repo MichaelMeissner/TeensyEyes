@@ -32,8 +32,12 @@ bool hasPersonSensor() {
   return PERSON_SENSOR_PRESENT;
 }
 
-static void printEyeName (const char *lname, const char *rname)
+static void printEyeName ()
 {
+  auto &defs = eyeDefinitions.at(defIndex);
+  const char *lname = defs[0].name;
+  const char *rname = defs[1].name;
+
   if (!lname || lname[0] == '\0')
     lname = "no left name";
 
@@ -73,6 +77,7 @@ void setup() {
   }
 
   initEyes(!hasJoystick(), !hasBlinkButton(), !hasLightSensor());
+  printEyeName();
 }
 
 void nextEye() {
@@ -93,9 +98,7 @@ void nextEye() {
   }
 
   eyes->updateDefinitions(eyeDefinitions.at(defIndex));
-
- auto &defs = eyeDefinitions.at(defIndex);
- printEyeName (defs[0].name, defs[1].name);
+  printEyeName();
 }
 
 /// MAIN LOOP -- runs continuously after setup() ----------------------------
