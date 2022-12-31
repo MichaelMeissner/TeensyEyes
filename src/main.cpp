@@ -37,19 +37,12 @@ bool hasPersonSensor() {
 static void printEyeName ()
 {
   auto &defs = eyeDefinitions.at(defIndex);
-  const char *lname = defs[0].name;
-  const char *rname = defs[1].name;
+  const char *name = defs[0].name;
 
-  if (!lname || lname[0] == '\0')
-    lname = "no left name";
+  if (!name || name[0] == '\0')
+    name = "no name";
 
-  if (!rname || rname[0] == '\0')
-    rname = "no right name";
-
-  if (strcmp (lname, rname) == 0)
-    Serial.printf ("Eye #%-2d %s\n", (int)defIndex, lname);
-  else
-    Serial.printf ("Eye #%-2d %s, %s\n", (int)defIndex, lname, rname);
+  Serial.printf ("Eye #%-2d %s\n", (int)defIndex, name);
 }
 
 /// INITIALIZATION -- runs once at startup ----------------------------------
