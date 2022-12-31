@@ -4,6 +4,7 @@
 #include <SPI.h>
 #include <array>
 #include <Wire.h>
+#include <Entropy.h>
 
 #include "config.h"
 #include "util/logging.h"
@@ -14,7 +15,8 @@
 static uint32_t defIndex{0};
 
 LightSensor lightSensor(LIGHT_PIN);
-PersonSensor personSensor;
+PersonSensor personSensor(Wire);
+bool personSensorFound = USE_PERSON_SENSOR;
 
 bool hasBlinkButton() {
   return BLINK_PIN >= 0;
@@ -29,7 +31,7 @@ bool hasJoystick() {
 }
 
 bool hasPersonSensor() {
-  return PERSON_SENSOR_PRESENT;
+  return personSensorFound;
 }
 
 static void printEyeName ()
@@ -58,7 +60,8 @@ void setup() {
   DumpMemoryInfo();
   Serial.println("Init");
   Serial.flush();
-  randomSeed(analogRead(A3)); // Seed random() from floating analog input
+  Entropy.Initialize();
+  randomSeed(Entropy.random());
 
   if (hasBlinkButton()) {
     pinMode(BLINK_PIN, INPUT_PULLUP);
@@ -71,9 +74,15 @@ void setup() {
 
   if (hasPersonSensor()) {
     Wire.begin();
-    personSensor.enableID(false);
-    personSensor.enableLED(false);
-    personSensor.setMode(PersonSensor::Mode::Continuous);
+    personSensorFound = personSensor.isPresent();
+    if (personSensorFound) {
+      Serial.println("Person Sensor detected");
+      personSensor.enableID(false);
+      // personSensor.enableLED(false);
+      personSensor.setMode(PersonSensor::Mode::Continuous);
+    } else {
+      Serial.println("No Person Sensor was found!");
+    }
   }
 
   initEyes(!hasJoystick(), !hasBlinkButton(), !hasLightSensor());
@@ -135,7 +144,7 @@ void loop() {
     
     for (int i = 0; i < personSensor.numFacesFound(); i++) {
       const person_sensor_face_t face = personSensor.faceDetails(i);
-      if (face.is_facing && face.box_confidence > 150) {
+      if (face.is_facing && face.box_confidence > 60) {
         int size = (face.box_right - face.box_left) * (face.box_bottom - face.box_top);
         if (size > maxSize) {
           maxSize = size;
@@ -146,10 +155,11 @@ void loop() {
 
     if (maxSize > 0) {
       eyes->setAutoMove(false);
-      float targetX = (static_cast<float>(maxFace.box_left) + static_cast<float>(maxFace.box_right - maxFace.box_left) / 2.0f) / 127.5f - 1.0f;
+      float targetX = -((static_cast<float>(maxFace.box_left) + static_cast<float>(maxFace.box_right - maxFace.box_left) / 2.0f) / 127.5f - 1.0f);
       float targetY = (static_cast<float>(maxFace.box_top) + static_cast<float>(maxFace.box_bottom - maxFace.box_top) / 3.0f) / 127.5f - 1.0f;
       eyes->setTargetPosition(targetX, targetY);
-    } else if (personSensor.timeSinceFaceDetectedMs() > 1'000) {
+    } else if (personSensor.timeSinceFaceDetectedMs() > 5'000 && !eyes->autoMoveEnabled()) {
+      // We haven't seen a face for a while so enable automove
       eyes->setAutoMove(true);
     }
   }
