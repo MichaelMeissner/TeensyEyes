@@ -6,4 +6,4 @@
 #define NUM_EYES	2
 
 // Enable person sensor
-//#define USE_PERSON_SENSOR	true
+#define USE_PERSON_SENSOR	true
