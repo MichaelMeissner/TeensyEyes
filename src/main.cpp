@@ -88,7 +88,28 @@ void setup() {
 }
 
 void nextEye() {
+
+#ifdef ORIG_CODE
   defIndex = (defIndex + 1) % eyeDefinitions.size();
+
+#else	/* meissner changes.  */
+  // For the first pass go through the eyes in linear order.  After the first
+  // pass choose the next eye at random.
+  static bool in_order = true;
+  uint32_t size = eyeDefinitions.size();
+  if (in_order && defIndex < size-1) {
+    defIndex++;
+
+  } else {
+    in_order = false;
+    size_t loop_count = 0;
+    uint32_t oldIndex = defIndex;
+    do {
+      defIndex = Entropy.random (0, size - 1);
+    } while (defIndex == oldIndex && ++loop_count < 4);
+  }
+#endif	/* meissner changes.  */
+
   eyes->updateDefinitions(eyeDefinitions.at(defIndex));
 
 #ifndef ORIG_CODE
