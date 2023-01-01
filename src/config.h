@@ -124,7 +124,13 @@ constexpr uint32_t EYE_DURATION_MS{4'000};
 constexpr uint32_t SPI_SPEED{30'000'000};
 
 // Set to -1 to disable the blink button and/or joystick
+#ifdef ORIG_CODE
 constexpr int8_t BLINK_PIN{-1};
+
+#else	/* meissner changes.  */
+constexpr int8_t BLINK_PIN{3};
+#endif	/* meissner changes.  */
+
 constexpr int8_t JOYSTICK_X_PIN{-1};
 constexpr int8_t JOYSTICK_Y_PIN{-1};
 constexpr int8_t LIGHT_PIN{-1};
