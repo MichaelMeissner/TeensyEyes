@@ -3,8 +3,8 @@
 ### Introduction from Michael Meissner
 
 This branch (meissner2) contains my updates (Michael Meissner) to the uncanny
-eyes code base.  This particular version is geared towards a pair of round
-240x240 GC9A01A displays.
+eyes code base.  This particular version is geared towards a pair of square
+240x240 ST7789 displays that I got from Adafruit.
 
 ### Introduction from Chris Miller
 
