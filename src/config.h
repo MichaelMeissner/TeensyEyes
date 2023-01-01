@@ -235,25 +235,47 @@ constexpr bool USE_PERSON_SENSOR{false};	// It works, but it isn't useful at the
 #endif	/* meissner changes.  */
 
 #ifdef USE_GC9A01A
-EyeController<2, GC9A01A_Display> *eyes{};
+EyeController<NUM_EYES, GC9A01A_Display> *eyes{};
 #elif defined USE_ST7789
-EyeController<2, ST7789_Display> *eyes{};
+EyeController<NUM_EYES, ST7789_Display> *eyes{};
 #endif
 
 void initEyes(bool autoMove, bool autoBlink, bool autoPupils) {
   // Create the displays and eye controller
   auto &defs = eyeDefinitions.at(0);
 #ifdef USE_GC9A01A
+#if NUM_EYES == 2
   auto l = new GC9A01A_Display(eyeInfo[0], SPI_SPEED);
   auto r = new GC9A01A_Display(eyeInfo[1], SPI_SPEED);
   const DisplayDefinition<GC9A01A_Display> left{l, defs[0]};
   const DisplayDefinition<GC9A01A_Display> right{r, defs[1]};
   eyes = new EyeController<2, GC9A01A_Display>({left, right}, autoMove, autoBlink, autoPupils);
+
+#elif NUM_EYES == 1
+  auto e = new GC9A01A_Display(eyeInfo[0], SPI_SPEED);
+  const DisplayDefinition<GC9A01A_Display> eye{e, defs[0]};
+  eyes = new EyeController<1, GC9A01A_Display>({eye}, autoMove, autoBlink, autoPupils);
+
+#else
+#error "At present, only 1 or 2 eyes are supported."
+#endif
+
 #elif defined USE_ST7789
+#if NUM_EYES == 2
   auto l = new ST7789_Display(eyeInfo[0]);
   auto r = new ST7789_Display(eyeInfo[1]);
   const DisplayDefinition<ST7789_Display> left{l, defs[0]};
   const DisplayDefinition<ST7789_Display> right{r, defs[1]};
   eyes = new EyeController<2, ST7789_Display>({left, right}, autoMove, autoBlink, autoPupils);
+
+#elif NUM_EYES == 1
+  auto e = new ST7789_Display(eyeInfo[0]);
+  const DisplayDefinition<ST7789_Display> eye{e, defs[0]};
+  eyes = new EyeController<1, ST7789_Display>({eye}, autoMove, autoBlink, autoPupils);
+
+#else
+#error "At present, only 1 or 2 eyes are supported."
 #endif
+
+#endif	/* USE_GC9A01A or USE_ST7789.  */
 }
