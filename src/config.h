@@ -44,7 +44,14 @@
 #ifdef ST7735_SPICLOCK
 #undef ST7735_SPICLOCK
 #endif
+
+#ifdef ORIG_CODE
 #define ST7735_SPICLOCK 30'000'000
+
+#else	/* meissner changes.  */
+#define ST7735_SPICLOCK SPI_SPEED
+#endif	/* meissner changes.  */
+
 #endif
 
 // A list of all the different eye definitions we want to use
@@ -116,12 +123,23 @@ ST7789_Config eyeInfo[] = {
 #endif
 #endif	/* meissner changes.  */
 
+#ifdef ORIG_CODE
 constexpr uint32_t EYE_DURATION_MS{4'000};
+
+#else	/* meissner changes.  */
+// meissner, slow down eye change a little bit.
+constexpr uint32_t EYE_DURATION_MS{16'000};
+#endif	/* meissner changes.  */
 
 /// The speed of the SPI bus. For maximum performance, set this as high as you can get away with.
 /// It will depend on the displays themselves, wire lengths, shielding/interference etc. My
 /// setup works up to about 90,000,000. At 100,000,000 I start seeing corruption on the displays.
+#ifdef ORIG_CODE
 constexpr uint32_t SPI_SPEED{30'000'000};
+
+#else	/* meissner changes.  */
+constexpr uint32_t SPI_SPEED{90'000'000};
+#endif	/* meissner changes.  */
 
 // Set to -1 to disable the blink button and/or joystick
 #ifdef ORIG_CODE
