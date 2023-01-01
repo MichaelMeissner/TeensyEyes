@@ -122,7 +122,6 @@ std::array<std::array<EyeDefinition, 2>, 13> eyeDefinitions{{
 };
 
 #else	/* meissner changes.  */
-#define NUM_EYES 2
 
 #if NUM_EYES == 1
 #define EYE_PATTERN(left, right)	{ left }
@@ -190,14 +189,18 @@ GC9A01A_Config eyeInfo[] = {
   // Meissner defaults
   // CS  DC  MOSI  SCK  RST  ROT  MIRROR USE_FB  ASYNC
   {   0, 24,   26,  27,  25,   2,      0,     1, true },	// Right eye
+#if NUM_EYES > 1
   {  22,  9,   11,  13,  10,   2,      0,     1, true }		// Left eye
+#endif
 };
 #elif defined (USE_ST7789)
 ST7789_Config eyeInfo[] = {
   // Meissner defaults
   // CS  DC  MOSI  SCK  RST  ROT  MIRROR USE_FB  ASYNC
   {   0, 24,   26,  27,  25,   0,      0,     1, true },	// Right eye
+#if NUM_EYES > 1
   {  22,  9,   11,  13,  10,   0,      0,     1, true }		// Left eye
+#endif
 };
 #endif
 #endif	/* meissner changes.  */
