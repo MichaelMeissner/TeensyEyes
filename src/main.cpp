@@ -58,13 +58,29 @@ void setup() {
   Entropy.Initialize();
   randomSeed(Entropy.random());
 
+#ifndef ORIG_CODE
+  Serial.printf("Eye duration = %d\n", (int)((EYE_DURATION_MS + 500) / 1000));
+
+  if (hasLightSensor()) {
+    Serial.printf("Light sensor pin is %d\n", LIGHT_PIN);
+  }
+#endif	/* meissner changes.  */
+
   if (hasBlinkButton()) {
     pinMode(BLINK_PIN, INPUT_PULLUP);
+
+#ifndef ORIG_CODE
+    Serial.printf("Blink pin is %d\n", BLINK_PIN);
+#endif	/* meissner changes.  */
   }
 
   if (hasJoystick()) {
     pinMode(JOYSTICK_X_PIN, INPUT);
     pinMode(JOYSTICK_Y_PIN, INPUT);
+
+#ifndef ORIG_CODE
+    Serial.printf("Joystick pins are %d, %d\n", JOYSTICK_X_PIN, JOYSTICK_Y_PIN);
+#endif	/* meissner changes.  */
   }
 
   if (hasPersonSensor()) {
