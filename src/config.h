@@ -228,7 +228,7 @@ constexpr int8_t LIGHT_PIN{-1};
 constexpr bool USE_PERSON_SENSOR{false};
 
 #else	/* meissner changes.  */
-constexpr bool USE_PERSON_SENSOR{true};
+constexpr bool USE_PERSON_SENSOR{false};	// It works, but it isn't useful at the desk
 #endif	/* meissner changes.  */
 
 #ifdef USE_GC9A01A
