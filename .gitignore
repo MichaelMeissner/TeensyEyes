@@ -34,3 +34,17 @@ cmake-*
 
 # PlatformIO
 .pio
+
+# meissner changes
+# Patch and diff support
+*.diff
+*.patch
+*.orig
+*.rej
+
+# Temporary files
+*~
+.#*
+*#
+*.tmp
+# end meissner changes
