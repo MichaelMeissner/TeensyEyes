@@ -3,8 +3,9 @@
 ### Introduction from Michael Meissner
 
 This branch (meissner2) contains my updates (Michael Meissner) to the uncanny
-eyes code base.  This particular version is geared towards a pair of square
-240x240 ST7789 displays that I got from Adafruit.
+eyes code base.  In order to use this branch, you need to do a symlink from one
+of the config-display-<xxx>.h files to config-display.h for the option you are
+using.
 
 ### Introduction from Chris Miller
 
