@@ -34,6 +34,19 @@ bool hasPersonSensor() {
   return personSensorFound;
 }
 
+#ifndef ORIG_CODE
+static void printEyeName ()
+{
+  auto &defs = eyeDefinitions.at(defIndex);
+  const char *name = defs[0].name;
+
+  if (!name || name[0] == '\0')
+    name = "no name";
+
+  Serial.printf ("Eye #%-2d %s\n", (int)defIndex, name);
+}
+#endif	/* meissner changes.  */
+
 /// INITIALIZATION -- runs once at startup ----------------------------------
 void setup() {
   Serial.begin(115200);
@@ -68,11 +81,19 @@ void setup() {
   }
 
   initEyes(!hasJoystick(), !hasBlinkButton(), !hasLightSensor());
+
+#ifndef ORIG_CODE
+  printEyeName();
+#endif	/* meissner changes.  */
 }
 
 void nextEye() {
   defIndex = (defIndex + 1) % eyeDefinitions.size();
   eyes->updateDefinitions(eyeDefinitions.at(defIndex));
+
+#ifndef ORIG_CODE
+  printEyeName();
+#endif	/* meissner changes.  */
 }
 
 /// MAIN LOOP -- runs continuously after setup() ----------------------------
