@@ -29,8 +29,13 @@
 
 #include "eyes/EyeController.h"
 
+#ifdef ORIG_CODE
 #define USE_GC9A01A
 //#define USE_ST7789
+
+#else	/* meissner changes.  */
+#include "config-display.h"
+#endif	/* meissner changes.  */
 
 #ifdef USE_GC9A01A
 #include "displays/GC9A01A_Display.h"
