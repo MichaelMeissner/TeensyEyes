@@ -188,8 +188,8 @@ GC9A01A_Config eyeInfo[] = {
 ST7789_Config eyeInfo[] = {
   // Meissner defaults
   // CS  DC  MOSI  SCK  RST  ROT  MIRROR USE_FB  ASYNC
-  {   0, 24,   26,  27,  25,   2,      0,     1, true },	// Right eye
-  {  22,  9,   11,  13,  10,   2,      0,     1, true }		// Left eye
+  {   0, 24,   26,  27,  25,   0,      0,     1, true },	// Right eye
+  {  22,  9,   11,  13,  10,   0,      0,     1, true }		// Left eye
 };
 #endif
 #endif	/* meissner changes.  */
