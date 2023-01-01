@@ -83,6 +83,7 @@ std::array<std::array<EyeDefinition, 2>, 13> eyeDefinitions{{
 // With two displays, one should be configured to mirror on the X axis. This simplifies
 // eyelid handling -- no need for distinct L-to-R or R-to-L inner loops. Just the X
 // coordinate of the iris is then reversed when drawing this eye, so they move the same.
+#ifdef ORIG_CODE
 #ifdef USE_GC9A01A
 GC9A01A_Config eyeInfo[] = {
     // CS DC MOSI SCK RST ROT MIRROR USE_FB ASYNC
@@ -96,6 +97,24 @@ ST7789_Config eyeInfo[] = {
     {-1, 9, 11, 13, 8, 0, false, true, true}, // Right display
 };
 #endif
+
+#else	/* meissner changes.  */
+#ifdef USE_GC9A01A
+GC9A01A_Config eyeInfo[] = {
+  // Meissner defaults
+  // CS  DC  MOSI  SCK  RST  ROT  MIRROR USE_FB  ASYNC
+  {   0, 24,   26,  27,  25,   2,      0,     1, true },	// Right eye
+  {  22,  9,   11,  13,  10,   2,      0,     1, true }		// Left eye
+};
+#elif defined (USE_ST7789)
+ST7789_Config eyeInfo[] = {
+  // Meissner defaults
+  // CS  DC  MOSI  SCK  RST  ROT  MIRROR USE_FB  ASYNC
+  {   0, 24,   26,  27,  25,   2,      0,     1, true },	// Right eye
+  {  22,  9,   11,  13,  10,   2,      0,     1, true }		// Left eye
+};
+#endif
+#endif	/* meissner changes.  */
 
 constexpr uint32_t EYE_DURATION_MS{4'000};
 
