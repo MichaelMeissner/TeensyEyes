@@ -2,7 +2,12 @@
 
 #include <Arduino.h>
 
+#ifdef ORIG_CODE
 // #define SHOW_FPS
+
+#else	/* meissner changes.  */
+#define SHOW_FPS
+#endif	/* meissner changes.  */
 
 template <typename T>
 class Display {
