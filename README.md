@@ -1,6 +1,12 @@
 # TeensyEyes
 
-### Introduction
+### Introduction from Michael Meissner
+
+This branch (meissner2) contains my updates (Michael Meissner) to the uncanny
+eyes code base.  This particular version is geared towards a pair of round
+240x240 GC9A01A displays.
+
+### Introduction from Chris Miller
 
 This project is my take on "[Uncanny Eyes](https://github.com/adafruit/Uncanny_Eyes)", adapted for [Teensy 4.x](https://www.pjrc.com/store/teensy40.html)
 microcontrollers. It renders animated eyes on round GC9A01A LCD screens. See the video below for an example of the eyes in action.
