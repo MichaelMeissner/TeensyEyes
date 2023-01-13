@@ -230,7 +230,7 @@ constexpr int8_t LIGHT_PIN{-1};
 #ifdef ORIG_CODE
 constexpr bool USE_PERSON_SENSOR{false};
 
-#else	/* meissner changes.  */
+#elif !defined(USE_PERSON_SENSOR)		/* meissner changes.  */
 constexpr bool USE_PERSON_SENSOR{false};	// It works, but it isn't useful at the desk
 #endif	/* meissner changes.  */
 
