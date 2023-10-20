@@ -49,17 +49,21 @@
 #if defined(ALL_EYES)
 #include "eyes/240x240/anime.h"
 #include "eyes/240x240/bigBlue.h"
+#include "eyes/240x240/blueFlame1.h"
+#include "eyes/240x240/blueFlame2.h"
 #include "eyes/240x240/brown.h"
 #include "eyes/240x240/doe.h"
 #include "eyes/240x240/doomRed.h"
 #include "eyes/240x240/doomSpiral.h"
+#include "eyes/240x240/firebox.h"
 #include "eyes/240x240/fish.h"
 #include "eyes/240x240/fizzgig.h"
+#include "eyes/240x240/flame.h"
 #include "eyes/240x240/leopard.h"
 #include "eyes/240x240/newt.h"
 #include "eyes/240x240/spikes.h"
 
-#define NUM_EYE_PATTERNS 19
+#define NUM_EYE_PATTERNS 23
 #else
 #define NUM_EYE_PATTERNS 8
 #endif
@@ -145,14 +149,18 @@ std::array<std::array<EyeDefinition, NUM_EYES>, NUM_EYE_PATTERNS> eyeDefinitions
     EYE_PATTERN (toonstripe::eye,    toonstripe::eye),
 
 #if defined(ALL_EYES)
-    EYE_PATTERN (anime::eye,         anime::eye),
+    EYE_PATTERN (anime::left,        anime::right),
     EYE_PATTERN (bigBlue::eye,       bigBlue::eye),
+    EYE_PATTERN (blueFlame1::eye,    blueFlame1::eye),
+    EYE_PATTERN (blueFlame2::eye,    blueFlame2::eye),
     EYE_PATTERN (brown::eye,         brown::eye),
     EYE_PATTERN (doe::left,          doe::right),
     EYE_PATTERN (doomRed::eye,       doomRed::eye),
     EYE_PATTERN (doomSpiral::left,   doomSpiral::right),
+    EYE_PATTERN (firebox::eye,       firebox::eye),
     EYE_PATTERN (fish::eye,          fish::eye),
     EYE_PATTERN (fizzgig::eye,       fizzgig::eye),
+    EYE_PATTERN (flame::eye,         flame::eye),
     EYE_PATTERN (leopard::left,      leopard::right),
     EYE_PATTERN (newt::eye,          newt::eye),
     EYE_PATTERN (spikes::eye,        spikes::eye),
