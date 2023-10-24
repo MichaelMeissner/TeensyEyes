@@ -240,6 +240,9 @@ constexpr bool USE_PERSON_SENSOR{false};
 
 #elif !defined(USE_PERSON_SENSOR)		/* meissner changes.  */
 constexpr bool USE_PERSON_SENSOR{false};	// It works, but it isn't useful at the desk
+
+#else	/* meissner changes.  */
+constexpr bool USE_PERSON_SENSOR{true};
 #endif	/* meissner changes.  */
 
 #ifdef USE_GC9A01A
