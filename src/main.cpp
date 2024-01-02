@@ -14,9 +14,9 @@
 #ifdef USE_AUDIO
 #include <Audio.h>
 
-//#ifndef AUDIO_PROGMEM
-//#define AUDIO_PROGMEM	PROGMEM
-//#endif
+#ifndef AUDIO_PROGMEM
+#define AUDIO_PROGMEM	PROGMEM
+#endif
 
 #if    !defined(USE_AUDIO_CACKLE)  && !defined(USE_AUDIO_CATSCREAM)	\
     && !defined(USE_AUDIO_GHOUL)   && !defined(USE_AUDIO_KNOCKING)	\
@@ -124,10 +124,9 @@ const size_t max_sounds = sizeof (sounds) / sizeof (sounds[0]);
 
 // GUItool: begin automatically generated code
 AudioPlayMemory		playMem;		//xy=691,246
-AudioMixer4		mixer;			//xy=900,253
-AudioOutputI2S		i2s;			//xy=1081,255
-AudioConnection		patchCord1 (playMem, 0, mixer, 0);
-AudioConnection		patchCord2 (mixer, i2s);
+AudioOutputI2S		shield;			//xy=1081,255
+AudioConnection		patchCord1 (playMem, 0, shield, 0);
+AudioControlSGTL5000	sgtl5000;
 // GUItool: end automatically generated code
 
 #endif	/* USE_AUDIO.  */
@@ -174,6 +173,9 @@ void setup() {
   while (!Serial && millis() < 2000);
   delay(200);
   DumpMemoryInfo();
+  Serial.println("");
+  Serial.println("==============================");
+  Serial.println("");
   Serial.println("Init");
   Serial.flush();
   Entropy.Initialize();
@@ -222,15 +224,17 @@ void setup() {
 #ifndef ORIG_CODE
 
 #ifdef USE_AUDIO
-  Serial.printf ("Sounds:\n");
+  Serial.printf("Sounds:\n");
   for (size_t i = 0; i < max_sounds; i++)
     Serial.printf ("    %-10s %8u\n", sounds[i].name, (unsigned long)sounds[i].size);
   Serial.printf ("\n");
 
   AudioMemory (8);
-  mixer.gain (0, 0.5f);
+  sgtl5000.enable ();
+  sgtl5000.volume (0.5f);
 #endif
 
+  Serial.println("");
   printEyeName();
 #endif	/* meissner changes.  */
 }
