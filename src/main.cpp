@@ -11,9 +11,11 @@
 #include "sensors/LightSensor.h"
 #include "sensors/PersonSensor.h"
 
-#ifdef USE_AUDIO
+#if defined(USE_AUDIO_MEMORY)
 #include <Audio.h>
+#endif
 
+#ifdef USE_AUDIO_MEMORY
 #ifndef AUDIO_PROGMEM
 #define AUDIO_PROGMEM	PROGMEM
 #endif
@@ -223,7 +225,7 @@ void setup() {
 
 #ifndef ORIG_CODE
 
-#ifdef USE_AUDIO
+#ifdef USE_AUDIO_MEMORY
   Serial.printf("Sounds:\n");
   for (size_t i = 0; i < max_sounds; i++)
     Serial.printf ("    %-10s %8u\n", sounds[i].name, (unsigned long)sounds[i].size);
@@ -240,7 +242,7 @@ void setup() {
 }
 
 /* start meissner changes.  */
-#ifdef USE_AUDIO
+#ifdef USE_AUDIO_MEMORY
 void loop_audio () {
   if (!playMem.isPlaying ()) {
     sound_num = Entropy.random (0, max_sounds - 1);
@@ -288,7 +290,7 @@ void nextEye() {
 /// MAIN LOOP -- runs continuously after setup() ----------------------------
 void loop() {
 
-#ifdef USE_AUDIO
+#ifdef USE_AUDIO_MEMORY
   // Update sounds
   loop_audio ();
 #endif
