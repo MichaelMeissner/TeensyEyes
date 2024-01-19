@@ -58,5 +58,4 @@ python genall.py ../../../src/eyes/graphics/240x240
 
 To use your newly created eye, include it with `#include "path/to/eyename.h"` and access it in your
 code using `eyename::eye`, or with `eyename::left` and `eyename::right` if your eye has different parameters
-for the left and right eyes.--
-Test
+for the left and right eyes.
