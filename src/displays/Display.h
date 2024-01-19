@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 #ifdef ORIG_CODE
-//#define SHOW_FPS
+// #define SHOW_FPS
 
 #else	/* meissner changes.  */
 #define SHOW_FPS

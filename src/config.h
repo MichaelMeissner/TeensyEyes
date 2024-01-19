@@ -246,11 +246,11 @@ constexpr int8_t LIGHT_PIN{-1};
 #ifdef ORIG_CODE
 constexpr bool USE_PERSON_SENSOR{false};
 
-#elif !defined(USE_PERSON_SENSOR)		/* meissner changes.  */
+#elif !defined(DEFAULT_PERSON_SENSOR)		/* meissner changes.  */
 constexpr bool USE_PERSON_SENSOR{false};	// It works, but it isn't useful at the desk
 
 #else
-constexpr bool USE_PERSON_SENSOR{true);
+constexpr bool USE_PERSON_SENSOR{DEFAULT_PERSON_SENSOR};
 #endif	/* meissner changes.  */
 
 #ifdef USE_GC9A01A

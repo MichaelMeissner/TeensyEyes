@@ -1,6 +1,6 @@
 #pragma once
 
-// The G++ with Teensydunio 1.59 beta 3 adds a new warning. This silences it.
+// The G++ with Teensydunio 1.59 beta 3 adds a new warning.   Silence it.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpsabi"
 

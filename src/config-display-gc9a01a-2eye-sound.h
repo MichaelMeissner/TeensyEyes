@@ -13,4 +13,4 @@
 //#define AUDIO_CS		BUILTIN_SDCARD
 
 // Enable person sensor
-//#define USE_PERSON_SENSOR	true
+//#define DEFAULT_PERSON_SENSOR	true

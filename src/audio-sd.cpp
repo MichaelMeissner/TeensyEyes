@@ -26,6 +26,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
+#include <Entropy.h>
 
 #include "config-display.h"
 
@@ -85,7 +86,7 @@ public:
 // MP3 subclass
 class audio_mp3 : public audio_common {
 public:
-  audio_mp3 () : audio_common ()	{}
+  audio_mp3 () : audio_common ()		{}
   ~audio_mp3 ()				{}
   bool play (const char *filename)	{ return mp3.play (filename); }
   bool isPlaying (void)			{ return mp3.isPlaying (); }
@@ -97,7 +98,7 @@ public:
 // AAC subclass
 class audio_aac : public audio_common {
 public:
-  audio_aac () : audio_common ()	{}
+  audio_aac () : audio_common ()		{}
   ~audio_aac ()				{}
   bool play (const char *filename)	{ return aac.play (filename); }
   bool isPlaying (void)			{ return aac.isPlaying (); }
@@ -121,7 +122,7 @@ private:
   AudioPlaySdRaw raw;
 
 public:
-  audio_raw () : audio_common ()	{ raw.begin ();}
+  audio_raw () : audio_common ()		{ raw.begin (); }
   ~audio_raw ()				{}
   bool play (const char *filename)	{ return raw.play (filename); }
   bool isPlaying (void)			{ return raw.isPlaying (); }
@@ -142,7 +143,6 @@ static AudioMixer4		mixright;
 
 // Delays to use
 const unsigned long		delay_after_start	=  250UL;
-const unsigned long		delay_after_end		= 3000UL;
 const unsigned long		delay_loop		= 9000UL;
 
 // Audio common
@@ -158,9 +158,6 @@ static class audio_wav		wav_player;
 static class audio_raw		raw_player;
 static class audio_dummy		dummy_player;
 static class audio_common	*audio = (class audio_common *) &dummy_player;
-
-// Do we need to open the SD file?
-static bool			do_open = true;
 
 #if USE_MP3
 // MP3
@@ -193,6 +190,18 @@ static AudioConnection		patch_audio_l (mixleft,  0, i2s1, 0);
 static AudioConnection		patch_audio_r (mixright, 0, i2s1, 1);
 static AudioControlSGTL5000	sgtl5000;
 #endif
+
+// Recorded file names
+#ifndef MAX_FILES
+#define MAX_FILES		32
+#endif
+
+#ifndef MAX_FILENAME_LEN
+#define MAX_FILENAME_LEN	32
+#endif
+
+static char	filenames[MAX_FILES][MAX_FILENAME_LEN+1];
+static size_t	num_files	= 0;
 
 
 void setup_audio_sd ()
@@ -257,13 +266,57 @@ void setup_audio_sd ()
 
   // Start SD card
   if (SD.begin (chipSelect)) {
-    Serial.println ("SD library is able to access the file system");
+    Serial.printf ("SD library is able to access the file system, CS = %d\n", chipSelect);
 
   } else {
     // stop here, but print a message repetitively
     while (1) {
       Serial.println ("Unable to access the SD card");
       delay (delay_loop);
+    }
+  }
+
+  // Read the files
+  Serial.println ("Open SD root");
+  root = SD.open ("/");
+  File files;
+
+  while (files = root.openNextFile ()) {
+    const char *filename = files.name ();
+
+    if (!filename) {
+      Serial.printf ("Weird, no filename\n\n");
+
+    } else {
+      const char *extension = strrchr (filename, '.');
+
+      if (extension
+	  && num_files < MAX_FILES
+	  && strlen (filename) <= MAX_FILENAME_LEN
+	  && (strcmp (extension, ".WAV") == 0
+	      || strcmp (extension, ".wav") == 0
+
+#if USE_MP3
+	      || strcmp (extension, ".MP3") == 0
+	      || strcmp (extension, ".mp3") == 0
+#endif	/* USE_MP3.  */
+
+#if USE_AAC
+	      || strcmp (extension, ".AAC") == 0
+	      || strcmp (extension, ".aac") == 0
+	      || strcmp (extension, ".MP4") == 0
+	      || strcmp (extension, ".mp4") == 0
+	      || strcmp (extension, ".M4A") == 0
+	      || strcmp (extension, ".m4a") == 0
+#endif	/* USE_AAC.  */
+
+	      || strcmp (extension, ".RAW") == 0
+	      || strcmp (extension, ".raw") == 0)) {
+
+	strcpy (filenames[num_files], filename);
+	Serial.printf ("# %2d, filename = %s\n", (int)num_files, filename);
+	num_files++;
+      }
     }
   }
 }
@@ -284,6 +337,11 @@ static void do_mixer (int channel, float gain)
 // Loop reading and playing a file
 void loop_audio_sd ()
 {
+  // Did we find any files?
+  if (!num_files) {
+    return;
+  }
+
   // Still playing?
   if (audio->isPlaying ()) {
     return;
@@ -291,40 +349,13 @@ void loop_audio_sd ()
 
   audio = (class audio_common *) &dummy_player;
 
-  // Starting to index the SD card for MP3/AAC/WAV.
-  if (do_open) {
-    Serial.println ("Open SD root");
-    root = SD.open ("/");
-    do_open = false;
-
-  } else {
-    delay (delay_after_end);
-  }
-
-  File files =  root.openNextFile ();
-  if (!files) {
-    // If no more files, start over
-    files.close ();
-    do_open = true;
-
-    Serial.printf ("\nEnd of files, restarting\n");
-    delay (delay_after_end);
-    return;
-  }
-
-  const char *filename = files.name ();
-
-  if (!filename) {
-    Serial.printf ("Weird, no filename\n\n");
-    return;
-  }
-
-  Serial.printf ("filename = %s\n", filename);
+  int cur_file = Entropy.random (0, num_files - 1);
+  const char *filename  = filenames[cur_file];
   const char *extension = strrchr (filename, '.');
+  bool skip = false;
 
   if (!extension) {
-    Serial.printf ("\nNo extension for %s\n", filename);
-    return;
+    skip = true;
 
 #if USE_MP3
   } else if (strcmp (extension, ".MP3") == 0
@@ -361,12 +392,26 @@ void loop_audio_sd ()
     do_mixer (PLAYER_RAW, 1.0f);
 
   } else {
-    Serial.printf ("\nUknown file %s\n");
-    return;
+    skip = true;
   }
 
-  Serial.printf ("\n%s is a %s file\n", filename, audio->name ());
-  audio->play (filename);
-  delay (delay_after_start);
+  if (skip) {
+    Serial.printf ("Skipping %s\n", filename);
+
+  } else {
+    bool ret = audio->play (filename);
+    static unsigned long prev_ms = 0UL;
+    unsigned long ms = millis ();
+
+    Serial.printf ("%s.play (\"%s\"), #%d, returned %s, %lu ms\n",
+		   audio->name (),
+		   filename,
+		   cur_file,
+		   ret ? "true" : "false",
+		   ms - prev_ms);
+
+    prev_ms = ms;
+    delay (delay_after_start);
+  }
 }
 #endif	/* USE_AUDIO_SDCARD.  */
