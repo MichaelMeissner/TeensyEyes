@@ -31,7 +31,7 @@ private:
   uint32_t maxGazeMs{3000};
 
   /// The amount of fixation to apply
-  int nufix{7};
+  int32_t nufix{7};
 
   // For autonomous iris scaling
   static constexpr size_t irisLevels{7};
@@ -59,7 +59,7 @@ private:
         state.inMotion = false;
         // The "move" duration temporarily becomes a hold duration...
         // Normally this is 35 ms to 1 sec, but don't exceed gazeMax setting
-        uint32_t limit = min(1000u, maxGazeMs);
+        uint32_t limit = std::min(static_cast<uint32_t>(1000), maxGazeMs);
         state.moveDurationMs = random(35u, limit);         // Time between micro-saccades
         if (!state.saccadeIntervalMs) {                    // Cleared when "big" saccade finishes
           state.lastSaccadeStopMs = t;                     // Time when saccade stopped
@@ -70,8 +70,8 @@ private:
         eye.x = state.eyeOldX = state.eyeNewX;           // Save position
         eye.y = state.eyeOldY = state.eyeNewY;
       } else { // Move time's not yet fully elapsed -- interpolate position
-        float e = (float) dt / float(state.moveDurationMs); // 0.0 to 1.0 during move
-        float e2 = e * e;
+        float e = static_cast<float>(dt) / static_cast<float>(state.moveDurationMs); // 0.0 to 1.0 during move
+        const float e2 = e * e;
         e = e2 * (3 - 2 * e);     // Easing function: 3*e^2-2*e^3, values in range 0.0 to 1.0
         eye.x = state.eyeOldX + (state.eyeNewX - state.eyeOldX) * e; // Interp X
         eye.y = state.eyeOldY + (state.eyeNewY - state.eyeOldY) * e; // and Y
@@ -84,9 +84,9 @@ private:
         // It's time to begin a new move
         if ((t - state.lastSaccadeStopMs) > state.saccadeIntervalMs) {
           // It's time for a 'big' saccade. r is the radius in X and Y that the eye can go, from (0,0) in the center.
-          float r = ((float) eye.definition->polar.mapRadius * 2 - (float) screenWidth * M_PI_2) * 0.75f;
+          float r = (static_cast<float>(eye.definition->polar.mapRadius * 2) - static_cast<float>(screenWidth) * M_PI_2) * 0.75f;
           state.eyeNewX = random(-r, r);
-          float moveDist = sqrtf(r * r - state.eyeNewX * state.eyeNewX);
+          const float moveDist = sqrtf(r * r - state.eyeNewX * state.eyeNewX);
           state.eyeNewY = random(-moveDist, moveDist);
           // Set the duration for this move, and start it going.
           state.moveDurationMs = random(83, 166); // ~1/12 - ~1/6 sec
@@ -96,11 +96,11 @@ private:
           // r is possible radius of motion, ~1/10 size of full saccade.
           // We don't bother with clipping because if it strays just a little,
           // that's okay, it'll get put in-bounds on next full saccade.
-          float r = (float) eye.definition->polar.mapRadius * 2 - (float) screenWidth * M_PI_2;
+          float r = static_cast<float>(eye.definition->polar.mapRadius * 2) - static_cast<float>(screenWidth) * M_PI_2;
           r *= 0.07f;
-          float dx = random(-r, r);
+          const float dx = random(-r, r);
           state.eyeNewX = eye.x - eye.definition->polar.mapRadius + dx;
-          float h = sqrtf(r * r - dx * dx);
+          const float h = sqrtf(r * r - dx * dx);
           state.eyeNewY = eye.y - eye.definition->polar.mapRadius + random(-h, h);
           state.moveDurationMs = random(7, 25); // 7-25 ms microsaccade
         }
@@ -136,20 +136,20 @@ private:
 
     // Automated pupil resizing. Use autonomous iris w/fractal subdivision
     float n, sum{0.5f};
-    for (uint16_t i = 0; i < irisLevels; i++) {
-      uint16_t iexp = 1 << (i + 1);         // 2,4,8,16,...
-      uint16_t imask = (iexp - 1);          // 2^i-1 (1,3,7,15,...)
-      uint16_t ibits = state.irisFrame & imask;  // 0 to mask
+    for (uint32_t i = 0; i < irisLevels; i++) {
+      uint32_t iexp = 1 << (i + 1);         // 2,4,8,16,...
+      uint32_t imask = (iexp - 1);          // 2^i-1 (1,3,7,15,...)
+      uint32_t ibits = state.irisFrame & imask;  // 0 to mask
       if (ibits) {
-        float weight = (float) ibits / (float) iexp; // 0.0 to <1.0
+        const float weight = static_cast<float>(ibits) / static_cast<float>(iexp); // 0.0 to <1.0
         n = irisPrev[i] * (1.0f - weight) + irisNext[i] * weight;
       } else {
         n = irisNext[i];
         irisPrev[i] = irisNext[i];
-        irisNext[i] = -0.5f + ((float) random(1000) / 999.0f); // -0.5 to +0.5
+        irisNext[i] = -0.5f + (static_cast<float>(random(1000)) / 999.0f); // -0.5 to +0.5
       }
       iexp = 1 << (irisLevels - i); // ...8,4,2,1
-      sum += n / (float) iexp;
+      sum += n / static_cast<float>(iexp);
     }
     setPupil(sum);
 
@@ -235,8 +235,8 @@ private:
     return blinkFactor;
   }
 
-  float mapToScreen(int value, int mapRadius, int eyeRadius) const {
-    return sinf((float) value / (float) mapRadius) * (float) M_PI_2 * (float) eyeRadius;
+  float mapToScreen(int32_t value, int32_t mapRadius, int32_t eyeRadius) const {
+    return sinf(static_cast<float>(value) / static_cast<float>(mapRadius)) * static_cast<float>(M_PI_2) * static_cast<float>(eyeRadius);
   }
 
   void constrainEyeCoord(float &x, float &y) {
@@ -254,23 +254,23 @@ private:
     if (eye.definition->tracking) {
       // Eyelids are set to naturally "track" the pupils (move up or down automatically).
       // Find the pupil position on screen
-      uint16_t mapRadius = eye.definition->polar.mapRadius;
-      int ix = (int) mapToScreen(mapRadius - eye.x, mapRadius, eye.definition->radius) + screenWidth / 2;
-      int iy = (int) mapToScreen(mapRadius - eye.y, mapRadius, eye.definition->radius) + screenWidth / 2;
+      uint32_t mapRadius = eye.definition->polar.mapRadius;
+      int32_t ix = static_cast<int32_t>(mapToScreen(mapRadius - eye.x, mapRadius, eye.definition->radius)) + screenWidth / 2;
+      int32_t iy = static_cast<int32_t>(mapToScreen(mapRadius - eye.y, mapRadius, eye.definition->radius)) + screenWidth / 2;
       iy -= eye.definition->iris.radius * eye.definition->squint;
       if (eyeIndex & 1) {
         // Flip for right eye
         ix = screenWidth - 1 - ix;
       }
-      uint8_t upperOpen = eye.definition->eyelids.upperOpen(ix);
+      int32_t upperOpen = eye.definition->eyelids.upperOpen(ix);
       if (iy <= upperOpen) {
         upperQ = 1.0f;
       } else {
-        uint8_t upperClosed = eye.definition->eyelids.upperClosed(ix);
+        int32_t upperClosed = eye.definition->eyelids.upperClosed(ix);
         if (iy >= upperClosed) {
           upperQ = 0.0f;
         } else {
-          upperQ = (float) (upperClosed - iy) / (float) (upperClosed - upperOpen);
+          upperQ = static_cast<float>(upperClosed - iy) / static_cast<float>(upperClosed - upperOpen);
         }
       }
       lowerQ = 1.0f - upperQ;
@@ -323,27 +323,30 @@ private:
   /// \param blinkFactor How much the eye is blinking. 0 = not blinking, 1 = fully blinking (closed).
   void renderEye(Eye<Disp> &eye, float upperFactor, float lowerFactor, float blinkFactor) {
 
-    const uint8_t displacementMapSize = screenWidth / 2;
-    const uint16_t mapRadius = eye.definition->polar.mapRadius;
+    const int32_t displacementMapSize = screenWidth / 2;
+    const int32_t mapRadius = eye.definition->polar.mapRadius;
+    const int32_t mapDiameter = mapRadius * 2;
 
     Disp &display = *eye.display;
     EyeBlink &blink = eye.blink;
 
-    const int xPositionOverMap = eye.x - screenWidth / 2;
-    const int yPositionOverMap = eye.y - screenHeight / 2;
+    const int32_t xPositionOverMap = eye.x - screenWidth / 2;
+    const int32_t yPositionOverMap = eye.y - screenHeight / 2;
 
-    bool hasScleraTexture = eye.definition->sclera.hasTexture();
-    bool hasIrisTexture = eye.definition->iris.hasTexture();
+    const ScleraParams &sclera = eye.definition->sclera;
+    const IrisParams &iris = eye.definition->iris;
+    bool hasScleraTexture = sclera.hasTexture();
+    bool hasIrisTexture = iris.hasTexture();
 
     const float pupilRange = eye.definition->pupil.max - eye.definition->pupil.min;
     const float irisValue = 1.0f - (eye.definition->pupil.min + pupilRange * state.pupilAmount);
-    const int irisTextureHeight = hasIrisTexture ? eye.definition->iris.texture.height : 1;
+    const int32_t irisTextureHeight = hasIrisTexture ? iris.texture.height : 1;
     // We scale this up by 32768 to give us more precision but still use integer maths in the inner loop.
     // The 126 is the maximum distance value we can expect from the polar distance map.
-    int iPupilFactor = static_cast<int>(32768.0f / 126.0f * (irisTextureHeight - 1) / irisValue);
+    int32_t iPupilFactor = static_cast<int32_t>(32768.0f / 126.0f * (irisTextureHeight - 1) / irisValue);
     // We scale up by 126 and add 128 to match the 128-254 range of the distance map. It means a bit
     // less math in the inner loop.
-    const int irisSize = static_cast<int>(126.0f * irisValue) + 128;
+    const int32_t irisSize = static_cast<int32_t>(126.0f * irisValue) + 128;
 
     // Dampen the eyelid movement a bit
     upperFactor = eye.upperLidFactor * 0.7f + upperFactor * 0.3f;
@@ -360,140 +363,156 @@ private:
     eye.lowerLidFactor = lowerFactor;
     blink.blinkFactor = blinkFactor;
 
-    for (uint16_t screenX = 0; screenX < screenWidth; screenX++) {
+    // Hoist these out of the inner loops
+    const uint8_t *angleLookup = eye.definition->polar.angle;
+    const uint8_t *distanceLookup = eye.definition->polar.distance;
+    const uint16_t pupilColor = eye.definition->pupil.color;
+    const uint16_t backColor = eye.definition->backColor;
+    const EyelidParams &eyelids = eye.definition->eyelids;
+    const uint16_t eyelidColor = eyelids.color;
+    const uint8_t *displacement = eye.definition->displacement;
+
+    for (uint32_t screenX = 0; screenX < screenWidth; screenX++) {
       // Determine the extents of the eye that need to be drawn, based on where the eyelids
       // are located in both this and the previous frame
-      auto currentUpper = eye.definition->eyelids.upperLid(screenX, upperF);
-      auto currentLower = eye.definition->eyelids.lowerLid(screenX, lowerF);
+      auto currentUpper = eyelids.upperLid(screenX, upperF);
+      auto currentLower = eyelids.lowerLid(screenX, lowerF);
 
-      uint8_t minY, maxY;
+      uint32_t minY, maxY;
       if (eye.drawAll) {
         minY = 0;
         maxY = screenHeight;
       } else {
-        auto previousUpper = eye.definition->eyelids.upperLid(screenX, prevUpperF);
+        auto previousUpper = eyelids.upperLid(screenX, prevUpperF);
         minY = std::min(currentUpper, previousUpper);
-        auto previousLower = eye.definition->eyelids.lowerLid(screenX, prevLowerF);
+        auto previousLower = eyelids.lowerLid(screenX, prevLowerF);
         maxY = std::max(currentLower, previousLower);
       }
 
       // Figure out where we are in the displacement map. The eye (sphere) is symmetrical over
       // X and Y, so we can just swap axes to look up the Y displacement using the same table.
       const uint8_t *displaceX, *displaceY;
-      int8_t xmul; // Sign of X displacement: +1 or -1
-      int doff; // Offset into displacement arrays
+      int32_t xmul; // Sign of X displacement: +1 or -1
+      int32_t doff; // Offset into displacement arrays
       if (screenX < (screenWidth / 2)) {
         // Left half of screen, so we need to horizontally flip our displacement map lookup
-        displaceX = &eye.definition->displacement[displacementMapSize - 1 - screenX];
-        displaceY = &eye.definition->displacement[(displacementMapSize - 1 - screenX) * displacementMapSize];
+        displaceX = &displacement[displacementMapSize - 1 - screenX];
+        displaceY = &displacement[(displacementMapSize - 1 - screenX) * displacementMapSize];
         xmul = -1; // X displacement is always negative
       } else {
         // Right half of screen, so we can lookup horizontally as-is
-        displaceX = &eye.definition->displacement[screenX - displacementMapSize];
-        displaceY = &eye.definition->displacement[(screenX - displacementMapSize) * displacementMapSize];
+        displaceX = &displacement[screenX - displacementMapSize];
+        displaceY = &displacement[(screenX - displacementMapSize) * displacementMapSize];
         xmul = 1; // X displacement is always positive
       }
 
-      const int xx = xPositionOverMap + screenX;
-      for (uint16_t screenY = minY; screenY < maxY; screenY++) {
-        uint16_t p;
+      // draw any part of the upper eyelid that needs repainting
+      if (currentUpper > minY) {
+        display.drawFastVLine(screenX, minY, currentUpper - minY, eyelidColor);
+        minY = currentUpper;
+      }
+      // draw any part of the lower eyelid that needs repainting
+      if (currentLower < maxY) {
+        display.drawFastVLine(screenX, currentLower, maxY - currentLower, eyelidColor);
+        maxY = currentLower;
+      }
 
-        if (screenY < currentUpper || screenY >= currentLower) {
-          // We're in the eyelid
-          p = eye.definition->eyelids.color;
+      // draw everything else
+      const int32_t xx = xPositionOverMap + screenX;
+      for (uint32_t screenY = minY; screenY < maxY; screenY++) {
+        uint32_t p;
+
+        const int32_t yy = yPositionOverMap + screenY;
+        int32_t dx, dy;
+        if (screenY < displacementMapSize) {
+          // We're in the top half of the screen, so we need to vertically flip the displacement map lookup
+          doff = displacementMapSize - screenY - 1;
+          dy = -displaceY[doff];
         } else {
-          const int yy = yPositionOverMap + screenY;
-          int dx, dy;
-          if (screenY < displacementMapSize) {
-            // We're in the top half of the screen, so we need to vertically flip the displacement map lookup
-            doff = displacementMapSize - screenY - 1;
-            dy = -displaceY[doff];
-          } else {
-            // We're in the bottom half of the screen
-            doff = screenY - displacementMapSize;
-            dy = displaceY[doff];
-          }
-          dx = displaceX[doff * displacementMapSize];
-          if (dx < 255) {
-            // We're inside the eyeball (sclera/iris/pupil) area
-            dx *= xmul;  // Flip x offset sign if in left half of screen
-            int mx = xx + dx;
-            int my = yy + dy;
+          // We're in the bottom half of the screen
+          doff = screenY - displacementMapSize;
+          dy = displaceY[doff];
+        }
+        dx = displaceX[doff * displacementMapSize];
+        if (dx < 255) {
+          // We're inside the eyeball (sclera/iris/pupil) area
+          dx *= xmul;  // Flip x offset sign if in left half of screen
+          int32_t mx = xx + dx;
+          int32_t my = yy + dy;
 
-            if (mx >= 0 && mx < mapRadius * 2 && my >= 0 && my < mapRadius * 2) {
-              // We're inside the polar angle/distance maps
-              uint16_t angle;
-              int distance, moff;
-              if (my >= mapRadius) {
-                my -= mapRadius;
-                if (mx >= mapRadius) {
-                  // Quadrant 1 (bottom right), so we can use the angle/dist lookups directly
-                  mx -= mapRadius;
-                  moff = my * mapRadius + mx;
-                  angle = eye.definition->polar.angle[moff];
-                  distance = eye.definition->polar.distance[moff];
-                } else {
-                  // Quadrant 2 (bottom left), so rotate angle by 270 degrees clockwise (768) and mirror distance on X axis
-                  mx = mapRadius - mx - 1;
-                  angle = eye.definition->polar.angle[mx * mapRadius + my] + 768;
-                  distance = eye.definition->polar.distance[my * mapRadius + mx];
-                }
+          if (mx >= 0 && mx < mapDiameter && my >= 0 && my < mapDiameter) {
+            // We're inside the polar angle/distance maps
+            uint32_t angle;
+            int32_t distance, moff;
+            if (my >= mapRadius) {
+              my -= mapRadius;
+              if (mx >= mapRadius) {
+                // Quadrant 1 (bottom right), so we can use the angle/dist lookups directly
+                mx -= mapRadius;
+                moff = my * mapRadius + mx;
+                angle = angleLookup[moff];
+                distance = distanceLookup[moff];
               } else {
-                if (mx < mapRadius) {
-                  // Quadrant 3 (top left), so rotate angle by 180 degrees and mirror distance on the X and Y axes
-                  mx = mapRadius - mx - 1;
-                  my = mapRadius - my - 1;
-                  moff = my * mapRadius + mx;
-                  angle = eye.definition->polar.angle[moff] + 512;
-                  distance = eye.definition->polar.distance[moff];
-                } else {
-                  // Quadrant 4 (top right), so rotate angle by 90 degrees clockwise (256) and mirror distance on Y axis
-                  mx -= mapRadius;
-                  my = mapRadius - my - 1;
-                  angle = eye.definition->polar.angle[mx * mapRadius + my] + 256;
-                  distance = eye.definition->polar.distance[my * mapRadius + mx];
-                }
-              }
-
-              // Convert the polar angle/distance to texture map coordinates
-              if (distance < 128) {
-                // We're in the sclera
-                if (hasScleraTexture) {
-                  angle = ((angle + eye.currentScleraAngle) & 1023) ^ eye.definition->sclera.mirror;
-                  const int tx = (angle & 1023) * eye.definition->sclera.texture.width / 1024; // Texture map x/y
-                  const int ty = distance * eye.definition->sclera.texture.height / 128;
-                  p = eye.definition->sclera.texture.get(tx, ty);
-                } else {
-                  p = eye.definition->sclera.color;
-                }
-              } else if (distance < 255) {
-                // Either the iris or pupil
-                if (distance >= irisSize) {
-                  // Pupil
-                  p = eye.definition->pupil.color;
-                } else {
-                  // Iris
-                  if (hasIrisTexture) {
-                    angle = ((angle + eye.currentIrisAngle) & 1023) ^ eye.definition->iris.mirror;
-                    const int tx = (angle & 1023) * eye.definition->iris.texture.width / 1024;
-                    const int ty = (distance - 128) * iPupilFactor / 32768;
-                    p = eye.definition->iris.texture.get(tx, ty);
-                  } else {
-                    p = eye.definition->iris.color;
-                  }
-                }
-              } else {
-                // Back of eye
-                p = eye.definition->backColor;
+                // Quadrant 2 (bottom left), so rotate angle by 270 degrees clockwise (768) and mirror distance on X axis
+                mx = mapRadius - mx - 1;
+                angle = angleLookup[mx * mapRadius + my] + 768;
+                distance = distanceLookup[my * mapRadius + mx];
               }
             } else {
-              // We're outside the polar map so just use the back-of-eye color
-              p = eye.definition->backColor;
+              if (mx < mapRadius) {
+                // Quadrant 3 (top left), so rotate angle by 180 degrees and mirror distance on the X and Y axes
+                mx = mapRadius - mx - 1;
+                my = mapRadius - my - 1;
+                moff = my * mapRadius + mx;
+                angle = angleLookup[moff] + 512;
+                distance = distanceLookup[moff];
+              } else {
+                // Quadrant 4 (top right), so rotate angle by 90 degrees clockwise (256) and mirror distance on Y axis
+                mx -= mapRadius;
+                my = mapRadius - my - 1;
+                angle = angleLookup[mx * mapRadius + my] + 256;
+                distance = distanceLookup[my * mapRadius + mx];
+              }
+            }
+
+            // Convert the polar angle/distance to texture map coordinates
+            if (distance < 128) {
+              // We're in the sclera
+              if (hasScleraTexture) {
+                angle = ((angle + eye.currentScleraAngle) & 1023) ^ sclera.mirror;
+                const int32_t tx = (angle & 1023) * sclera.texture.width / 1024; // Texture map x/y
+                const int32_t ty = distance * sclera.texture.height / 128;
+                p = sclera.texture.get(tx, ty);
+              } else {
+                p = sclera.color;
+              }
+            } else if (distance < 255) {
+              // Either the iris or pupil
+              if (distance >= irisSize) {
+                // Pupil
+                p = pupilColor;
+              } else {
+                // Iris
+                if (hasIrisTexture) {
+                  angle = ((angle + eye.currentIrisAngle) & 1023) ^ iris.mirror;
+                  const int32_t tx = (angle & 1023) * iris.texture.width / 1024;
+                  const int32_t ty = (distance - 128) * iPupilFactor / 32768;
+                  p = iris.texture.get(tx, ty);
+                } else {
+                  p = iris.color;
+                }
+              }
+            } else {
+              // Back of eye
+              p = backColor;
             }
           } else {
-            // We're outside the eye area, i.e. this must be on an eyelid
-            p = eye.definition->eyelids.color;
+            // We're outside the polar map so just use the back-of-eye color
+            p = backColor;
           }
+        } else {
+          // We're outside the eye area, i.e. this must be on an eyelid
+          p = eyelidColor;
         }
         display.drawPixel(screenX, screenY, p);
       } // end column
@@ -583,7 +602,7 @@ public:
   /// \param xTarget the target x location for the eye(s), in the range -1.0 (hard left) to 1.0 (hard right)
   /// \param yTarget the target y location for the eye(s), in the range -1.0 (fully up) to 1.0 (fully down)
   /// \param durationMs the number of milliseconds the eye will take to arrive at the target location
-  void setTargetPosition(float xTarget, float yTarget, int durationMs = 120) {
+  void setTargetPosition(float xTarget, float yTarget, int32_t durationMs = 120) {
     constrainEyeCoord(xTarget, yTarget);
     Eye<Disp> &eye = currentEye();
     auto middle = static_cast<float>(eye.definition->polar.mapRadius);
@@ -611,7 +630,7 @@ public:
   /// Sets the target pupil size. The pupils will smoothly expand or contract to this size over time.
   /// \param ratio a value between 0 and 1, where 0 is the smallest permissible pupil size,
   /// 1 is the largest.
-  void setTargetPupil(float ratio, int durationMs = 100) {
+  void setTargetPupil(float ratio, int32_t durationMs = 100) {
     state.resizing = true;
     state.resizeStart = state.pupilAmount;
     state.resizeTarget = ratio;
@@ -625,7 +644,7 @@ public:
   /// \param ratio a value between 0 and 1, where 0 is the smallest permissible pupil size,
   /// 1 is the largest.
   void setPupil(float ratio) {
-    state.pupilAmount = max(0.0f, min(1.0f, ratio));
+    state.pupilAmount = std::max(0.0f, std::min(1.0f, ratio));
   }
 
   /// Updates the definitions of the eyes.

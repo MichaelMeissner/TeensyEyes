@@ -1,6 +1,6 @@
 #pragma once
 
-// The G++ with Teensydunio 1.59 beta 3 adds a new warning.   Silence it.
+// The G++ with Teensydunio 1.59 beta 3 adds a new warning. This silences it.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpsabi"
 
@@ -14,7 +14,7 @@ struct Image {
   const uint16_t width{};
   const uint16_t height{};
 
-  inline uint16_t get(uint16_t x, uint16_t y) const __attribute__((always_inline)) {
+  inline uint16_t get(uint32_t x, uint32_t y) const __attribute__((always_inline)) {
     return data[y * width + x];
   }
 };

@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 #ifdef ORIG_CODE
-// #define SHOW_FPS
+//#define SHOW_FPS
 
 #else	/* meissner changes.  */
 #define SHOW_FPS
@@ -12,8 +12,12 @@
 template <typename T>
 class Display {
 public:
-  inline void drawPixel(uint16_t x, uint16_t y, uint16_t color565) {
+  inline void drawPixel(int16_t x, int16_t y, uint16_t color565) const __attribute__((always_inline)) {
     static_cast<T&>(*this).drawPixel(x, y, color565);
+  }
+
+  inline void drawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color565) const __attribute__((always_inline)) {
+    static_cast<T&>(*this).drawFastVLine(x, y, h, color565);
   }
 
   void drawText(uint16_t x, uint16_t y, char *text) {
