@@ -201,6 +201,13 @@ void loop() {
     for (int i = 0; i < personSensor.numFacesFound(); i++) {
       const person_sensor_face_t face = personSensor.faceDetails(i);
       if (face.is_facing && face.box_confidence > 60) {
+	Serial.printf ("Face #%d, right = %d, left = %d, top = %d, bottom = %d\n",
+		       i,
+		       face.box_right,
+		       face.box_left,
+		       face.box_top,
+		       face.box_bottom);
+
         int size = (face.box_right - face.box_left) * (face.box_bottom - face.box_top);
         if (size > maxSize) {
           maxSize = size;
@@ -213,9 +220,11 @@ void loop() {
       eyes->setAutoMove(false);
       float targetX = -((static_cast<float>(maxFace.box_left) + static_cast<float>(maxFace.box_right - maxFace.box_left) / 2.0f) / 127.5f - 1.0f);
       float targetY = (static_cast<float>(maxFace.box_top) + static_cast<float>(maxFace.box_bottom - maxFace.box_top) / 3.0f) / 127.5f - 1.0f;
+      Serial.printf ("Face, targetX = %g, targetY = %g\n\n", targetX, targetY);
       eyes->setTargetPosition(targetX, targetY);
     } else if (personSensor.timeSinceFaceDetectedMs() > 5'000 && !eyes->autoMoveEnabled()) {
       // We haven't seen a face for a while so enable automove
+      Serial.println ("Turning off Person sensor");
       eyes->setAutoMove(true);
     }
   }
