@@ -13,4 +13,7 @@
 //#define AUDIO_CS		BUILTIN_SDCARD
 
 // Enable person sensor
-#define DEFAULT_PERSON_SENSOR	true
+//#define DEFAULT_PERSON_SENSOR	true
+
+// Enable dfrobot gravity face/gesture sensor
+#define DEFAULT_GRAVITY_SENSOR	true

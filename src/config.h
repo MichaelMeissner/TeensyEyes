@@ -62,8 +62,9 @@
 #include "eyes/240x240/leopard.h"
 #include "eyes/240x240/newt.h"
 #include "eyes/240x240/spikes.h"
+#include "eyes/240x240/green.h"		// https://forum.pjrc.com/index.php?threads/uncanny-eyes-is-getting-expensive.71068/page-7#post-361781
 
-#define NUM_EYE_PATTERNS 23
+#define NUM_EYE_PATTERNS 24
 #else
 #define NUM_EYE_PATTERNS 8
 #endif
@@ -149,6 +150,7 @@ std::array<std::array<EyeDefinition, NUM_EYES>, NUM_EYE_PATTERNS> eyeDefinitions
     EYE_PATTERN (toonstripe::eye,    toonstripe::eye),
 
 #if defined(ALL_EYES)
+    EYE_PATTERN (green::left,        green::right),
     EYE_PATTERN (anime::left,        anime::right),
     EYE_PATTERN (bigBlue::eye,       bigBlue::eye),
     EYE_PATTERN (blueFlame1::eye,    blueFlame1::eye),

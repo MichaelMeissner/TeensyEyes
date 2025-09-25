@@ -44,4 +44,7 @@
 
 #include "eyes/240x240/polarDist_240_130_95_0.h"
 #include "eyes/240x240/polarDist_240_130_95_0.cpp"
+
+#include "eyes/240x240/polarDist_240_125_125_110.h"
+#include "eyes/240x240/polarDist_240_125_125_110.cpp"
 #endif
