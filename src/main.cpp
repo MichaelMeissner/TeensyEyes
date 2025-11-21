@@ -14,8 +14,13 @@
 // The index of the currently selected eye definitions
 static uint32_t defIndex{0};
 
+#ifdef ORIG_CODE
+TwoWire WIRE = Wire2;
+#else
+TwoWire WIRE = Wire;
+#endif
 LightSensor lightSensor(LIGHT_PIN);
-PersonSensor personSensor(Wire);
+PersonSensor personSensor(WIRE);
 bool personSensorFound = USE_PERSON_SENSOR;
 
 bool hasBlinkButton() {
@@ -55,7 +60,7 @@ void setup() {
   }
 
   if (hasPersonSensor()) {
-    Wire.begin();
+    WIRE.begin();
     personSensorFound = personSensor.isPresent();
     if (personSensorFound) {
       Serial.println("Person Sensor detected");
